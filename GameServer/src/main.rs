@@ -1,7 +1,7 @@
-extern crate GameServer;
+extern crate game_server;
 
 fn main() {
-    use GameServer::game;
+    use game_server::game;
 
     let mut _game: game::_Game = game::_Game::_init();
 
