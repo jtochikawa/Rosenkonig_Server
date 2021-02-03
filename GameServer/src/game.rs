@@ -1,26 +1,43 @@
 use crate::board;
 use big_s::S;
-use maplit::hashmap;
 use std::collections::HashMap;
+use maplit::hashmap;
 
 pub struct _Game {
     _b: board::_Board,
 }
 
-const DECK: HashMap<String, (String, i32)> = hashmap![
-    S("E1") => (S("East"), 1),
-    S("E2") => (S("East"), 2),
-    S("E3") => (S("East"), 3),
-    S("W1") => (S("West"), 1),
-    S("W2") => (S("West"), 2),
-    S("W3") => (S("West"), 3),
-    S("N1") => (S("North"), 1),
-    S("N2") => (S("North"), 2),
-    S("N3") => (S("North"), 3),
-    S("S1") => (S("South"), 1),
-    S("S2") => (S("South"), 2),
-    S("S3") => (S("South"), 3),
-];
+lazy_static! {
+    static ref CARDS: HashMap<String, (i32, i32)> = {
+        let m = hashmap! {
+            S("E1") => (1, 0),
+            S("E2") => (2, 0),
+            S("E3") => (3, 0),
+            S("W1") => (-1, 0),
+            S("W2") => (-2, 0),
+            S("W3") => (-3, 0),
+            S("N1") => (0, -1),
+            S("N2") => (0, -2),
+            S("N3") => (0, -3),
+            S("S1") => (0, 1),
+            S("S2") => (0, 2),
+            S("S3") => (0, 3),
+            S("NE1") => (1, -1),
+            S("NE2") => (2, -2),
+            S("NE3") => (3, -3),
+            S("NW1") => (-1, -1),
+            S("NW2") => (-2, -2),
+            S("NW3") => (-3, -3),
+            S("SE1") => (1, -1),
+            S("SE2") => (2, -2),
+            S("SE3") => (3, -3),
+            S("SW1") => (-1, 1),
+            S("SW2") => (-2, 2),
+            S("SW3") => (-3, 3),
+        };
+        m
+    };
+}
 
 impl _Game {
     pub fn _init () -> _Game {
