@@ -2,9 +2,11 @@ use crate::board;
 use big_s::S;
 use std::collections::HashMap;
 use maplit::hashmap;
+use rand::seq::SliceRandom;
 
 pub struct _Game {
     _b: board::_Board,
+    _deck: Vec<String>,
 }
 
 lazy_static! {
@@ -43,14 +45,27 @@ impl _Game {
     pub fn _init () -> _Game {
         _Game {
             _b: board::_Board::_init(),
+            _deck: vec![
+                S("E1"), S("E2"), S("E3"), S("W1"), S("W2"), S("W3"),
+                S("N1"), S("N2"), S("N3"), S("S1"), S("S2"), S("S3"),
+                S("NE1"), S("NE2"), S("NE3"), S("NW1"), S("NW2"), S("NW3"),
+                S("SE1"), S("SE2"), S("SE3"), S("SW1"), S("SW2"), S("SW3"),
+            ],
         }
     }
 
     pub fn game_loop(&mut self) {
+        let mut rng = rand::thread_rng();
+        self._deck.shuffle(&mut rng);
+        println!("{:?}", self._deck);
+        let dir = self._deck.pop().unwrap();
+        let mov = CARDS.get(&dir).unwrap();
+        println!("{:?} = {:?}", dir, mov);
         self._b.set_board(4, 4, 1);
         self._b.show_board();
         println!();
-        self._b.move_king(5,5);
+        let king = self._b.get_king();
+        self._b.move_king(king.0+ mov.0, king.1+mov.1);
         self._b.show_board();
     }
 }

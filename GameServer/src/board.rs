@@ -33,4 +33,8 @@ impl _Board {
     pub fn move_king(&mut self, _x:i32, _y:i32) {
         self.king = (_x, _y);
     }
+
+    pub fn get_king(&self) -> (i32, i32) {
+        return self.king;
+    }
 }
