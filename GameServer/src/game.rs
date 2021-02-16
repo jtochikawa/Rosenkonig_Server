@@ -1,4 +1,5 @@
 use crate::board;
+use crate::player;
 use big_s::S;
 use std::collections::HashMap;
 use maplit::hashmap;
@@ -57,15 +58,27 @@ impl _Game {
     pub fn game_loop(&mut self) {
         let mut rng = rand::thread_rng();
         self._deck.shuffle(&mut rng);
-        println!("{:?}", self._deck);
-        let dir = self._deck.pop().unwrap();
-        let mov = CARDS.get(&dir).unwrap();
-        println!("{:?} = {:?}", dir, mov);
+        let hands = self.deal();
+        let players = [player::_Player::init(&hands[0]), player::_Player::init(&hands[1])];
         self._b.set_board(4, 4, 1);
+        println!("{:?}", self._deck);
+        players[0].show_hand();
         self._b.show_board();
+        players[1].show_hand();
         println!();
         let king = self._b.get_king();
-        self._b.move_king(king.0+ mov.0, king.1+mov.1);
+        self._b.move_king(king.0+ 2, king.1+2);
+        players[0].show_hand();
         self._b.show_board();
+        players[1].show_hand();
+    }
+
+    pub fn deal(&mut self) -> [Vec<String>; 2] {
+        let mut hands: [Vec<String>; 2] = Default::default();
+        for index in 0..10 {
+            let dir = self._deck.pop().unwrap();
+            hands[index%2].push(dir);
+        }
+        hands
     }
 }
