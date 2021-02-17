@@ -62,12 +62,14 @@ impl _Game {
         let players = [player::_Player::init(&hands[0]), player::_Player::init(&hands[1])];
         self._b.set_board(4, 4, 1);
         println!("{:?}", self._deck);
-        players[0].show_hand();
-        self._b.show_board();
-        players[1].show_hand();
+        self.show(&players);
         println!();
         let king = self._b.get_king();
         self._b.move_king(king.0+ 2, king.1+2);
+        self.show(&players);
+    }
+
+    pub fn show(&self, players:&[player::_Player; 2]) {
         players[0].show_hand();
         self._b.show_board();
         players[1].show_hand();
