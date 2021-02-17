@@ -59,13 +59,14 @@ impl _Game {
         let mut rng = rand::thread_rng();
         self._deck.shuffle(&mut rng);
         let hands = self.deal();
-        let players = [player::_Player::init(&hands[0]), player::_Player::init(&hands[1])];
+        let mut players = [player::_Player::init(&hands[0]), player::_Player::init(&hands[1])];
         self._b.set_board(4, 4, 1);
         println!("{:?}", self._deck);
         self.show(&players);
         println!();
-        let king = self._b.get_king();
-        self._b.move_king(king.0+ 2, king.1+2);
+        let mov = players[0].input_mov();
+        let &(x, y) = CARDS.get(&mov).unwrap();
+        self._b.move_king(x, y);
         self.show(&players);
     }
 

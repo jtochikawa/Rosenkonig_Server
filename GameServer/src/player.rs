@@ -1,3 +1,5 @@
+use crate::input;
+
 pub struct _Player {
     hand: Vec<String>,
 }
@@ -14,5 +16,20 @@ impl _Player {
             print!("{0}:{1} ", _len, self.hand[_len]);
         }
         println!();
+    }
+
+    pub fn input_mov(&mut self) -> String {
+        loop {
+            println!("input mov!");
+            let mov: String = input::read();
+            if mov.trim() == "draw" && self.hand.len() < 5 {
+                return mov;
+            } else if self.hand.contains(&mov) {
+                self.hand.retain(|x| x != &mov);
+                return mov;
+            } else {
+                println!("mistake input sentence!");
+            }
+        }
     }
 }
