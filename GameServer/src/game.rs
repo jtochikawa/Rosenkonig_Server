@@ -57,17 +57,26 @@ impl _Game {
 
     pub fn game_loop(&mut self) {
         let mut rng = rand::thread_rng();
+        let v = [1, -1];
         self._deck.shuffle(&mut rng);
         let hands = self.deal();
         let mut players = [player::_Player::init(&hands[0]), player::_Player::init(&hands[1])];
-        self._b.set_board(4, 4, 1);
         println!("{:?}", self._deck);
-        self.show(&players);
-        println!();
-        let mov = players[0].input_mov();
-        let &(x, y) = CARDS.get(&mov).unwrap();
-        self._b.move_king(x, y);
-        self.show(&players);
+        let mut cnt: u32 = 0;
+        loop {
+            self.show(&players);
+            let c: usize = (cnt%2) as usize;
+            let mov = players[c].input_mov();
+            if mov.trim() == "exit" {
+                break;
+            }
+            let &(x, y) = CARDS.get(&mov).unwrap();
+            self._b.move_king(-v[c]*x, -v[c]*y);
+            let king = self._b.get_king();
+            self._b.set_board(king.0 as usize, king.1 as usize, v[c]);
+            println!("{}", mov);
+            cnt += 1;
+        }
     }
 
     pub fn show(&self, players:&[player::_Player; 2]) {

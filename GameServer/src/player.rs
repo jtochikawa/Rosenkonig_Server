@@ -20,7 +20,6 @@ impl _Player {
 
     pub fn input_mov(&mut self) -> String {
         loop {
-            println!("input mov!");
             let mov: String = input::read();
             if mov.trim() == "draw" && self.hand.len() < 5 {
                 return mov;
@@ -28,7 +27,7 @@ impl _Player {
                 self.hand.retain(|x| x != &mov);
                 return mov;
             } else {
-                println!("mistake input sentence!");
+                return "exit".to_string();
             }
         }
     }
