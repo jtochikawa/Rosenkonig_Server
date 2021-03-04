@@ -62,27 +62,24 @@ impl _Game {
         let hands = self.deal();
         let mut players = [player::_Player::init(&hands[0]), player::_Player::init(&hands[1])];
         println!("{:?}", self._deck);
-        let mut cnt: u32 = 0;
+        let mut c: usize = 0 as usize;
         loop {
             self.show(&players);
-            let c: usize = (cnt%2) as usize;
             let mov = players[c].input_mov();
             if mov.trim() == "exit" {
                 break;
             }
-            let &(x, y) = CARDS.get(&mov).unwrap();
-            self._b.move_king(-v[c]*x, -v[c]*y);
-            let king = self._b.get_king();
-            self._b.set_board(king.0 as usize, king.1 as usize, v[c]);
+            self.update_board(&mov, v[c]);
             println!("{}", mov);
-            cnt += 1;
+            c = 1 - c;
         }
     }
 
+    // 上をNとして上のプレイヤーを後手
     pub fn show(&self, players:&[player::_Player; 2]) {
-        players[0].show_hand();
-        self._b.show_board();
         players[1].show_hand();
+        self._b.show_board();
+        players[0].show_hand();
     }
 
     pub fn deal(&mut self) -> [Vec<String>; 2] {
@@ -92,5 +89,12 @@ impl _Game {
             hands[index%2].push(dir);
         }
         hands
+    }
+
+    pub fn update_board(&mut self, _mov:&String, _value:i32) {
+        let &(x, y) = CARDS.get(_mov).unwrap();
+        self._b.move_king(x, y);
+        let king = self._b.get_king();
+        self._b.set_board(king.0 as usize, king.1 as usize, _value);
     }
 }
