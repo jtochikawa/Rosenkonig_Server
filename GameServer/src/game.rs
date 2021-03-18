@@ -1,5 +1,7 @@
 use crate::board;
 use crate::player;
+use crate::constant;
+use crate::manager;
 use big_s::S;
 use std::collections::HashMap;
 use maplit::hashmap;
@@ -96,7 +98,7 @@ impl _Game {
     }
 
     pub fn update_board(&mut self, _mov:&String, _value:i32) {
-        let &(x, y) = CARDS.get(_mov).unwrap();
+        let &(x, y) = constant::CARDS.get(_mov).unwrap();
         self._b.move_king(x, y);
         let king = self._b.get_king();
         self._b.set_board(king.0 as usize, king.1 as usize, _value);
