@@ -8,6 +8,7 @@ use rand::seq::SliceRandom;
 pub struct _Game {
     _b: board::_Board,
     _deck: Vec<String>,
+    _discard: Vec<String>,
 }
 
 lazy_static! {
@@ -52,6 +53,7 @@ impl _Game {
                 S("NE1"), S("NE2"), S("NE3"), S("NW1"), S("NW2"), S("NW3"),
                 S("SE1"), S("SE2"), S("SE3"), S("SW1"), S("SW2"), S("SW3"),
             ],
+            _discard: vec![],
         }
     }
 
@@ -61,15 +63,15 @@ impl _Game {
         self._deck.shuffle(&mut rng);
         let hands = self.deal();
         let mut players = [player::_Player::init(&hands[0]), player::_Player::init(&hands[1])];
-        println!("{:?}", self._deck);
         let mut c: usize = 0 as usize;
-        loop {
+        'game: loop {
             self.show(&players);
             let mov = players[c].input_mov();
-            if mov.trim() == "exit" {
-                break;
+            match mov.trim() {
+                "exit" => break 'game,
+                "draw" => self.update_hand(&mut players[c]),
+                _ =>  self.update_board(&mov, v[c]),
             }
-            self.update_board(&mov, v[c]);
             println!("{}", mov);
             c = 1 - c;
         }
@@ -77,6 +79,8 @@ impl _Game {
 
     // 上をNとして上のプレイヤーを後手
     pub fn show(&self, players:&[player::_Player; 2]) {
+        println!("deck: {:?}", self._deck);
+        println!("discard: {:?}", self._discard);
         players[1].show_hand();
         self._b.show_board();
         players[0].show_hand();
@@ -96,5 +100,11 @@ impl _Game {
         self._b.move_king(x, y);
         let king = self._b.get_king();
         self._b.set_board(king.0 as usize, king.1 as usize, _value);
+        self._discard.push(_mov.to_string());
+    }
+
+    pub fn update_hand(&mut self, _player:&mut player::_Player) {
+        let card = self._deck.pop().unwrap();
+        _player.add_card(card);
     }
 }

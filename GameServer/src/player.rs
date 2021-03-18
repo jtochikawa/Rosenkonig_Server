@@ -18,6 +18,10 @@ impl _Player {
         println!();
     }
 
+    pub fn add_card(&mut self, _card:String) {
+        self.hand.push(_card);
+    }
+
     pub fn input_mov(&mut self) -> String {
         loop {
             let mov: String = input::read();
