@@ -25,14 +25,21 @@ impl _Player {
     pub fn input_mov(&mut self) -> String {
         loop {
             let mov: String = input::read();
-            if mov.trim() == "draw" && self.hand.len() < 5 {
+            if mov.trim() == "draw" {
                 return mov;
             } else if self.hand.contains(&mov) {
-                self.hand.retain(|x| x != &mov);
                 return mov;
             } else {
                 return "exit".to_string();
             }
         }
+    }
+
+    pub fn get_hand_length(&self) -> usize {
+        return self.hand.len();
+    }
+
+    pub fn discard_card(&mut self, mov:&String) {
+        self.hand.retain(|x| x != mov);
     }
 }

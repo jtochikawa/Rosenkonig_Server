@@ -23,13 +23,16 @@ lazy_static! {
             S("NW1") => (-1, -1),
             S("NW2") => (-2, -2),
             S("NW3") => (-3, -3),
-            S("SE1") => (1, -1),
-            S("SE2") => (2, -2),
-            S("SE3") => (3, -3),
+            S("SE1") => (1, 1),
+            S("SE2") => (2, 2),
+            S("SE3") => (3, 3),
             S("SW1") => (-1, 1),
             S("SW2") => (-2, 2),
             S("SW3") => (-3, 3),
         };
         m
     };
+    pub static ref PIECE_NUM : u32 = 52;
+    pub static ref SIZE: i32 = 9;
+    pub static ref EMPTY: i32 = 0;
 }

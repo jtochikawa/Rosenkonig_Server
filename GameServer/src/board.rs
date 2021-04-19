@@ -30,6 +30,10 @@ impl _Board {
         self.b[_y][_x] = _value;
     }
 
+    pub fn get_board_value(&self, _x:usize, _y:usize) -> i32 {
+        return self.b[_y][_x];
+    }
+
     pub fn move_king(&mut self, _x:i32, _y:i32) {
         self.king = (self.king.0+_x, self.king.1+_y);
     }

@@ -37,8 +37,21 @@ impl _Game {
             let mov = players[c].input_mov();
             match mov.trim() {
                 "exit" => break 'game,
-                "draw" => self.update_hand(&mut players[c]),
-                _ =>  self.update_board(&mov, v[c]),
+                "draw" => {
+                    if manager::able_to_draw(&players[c]) {
+                        self.update_hand(&mut players[c]);
+                    } else {
+                        continue 'game;
+                    }
+                },
+                _ =>  {
+                    if manager::is_regal_move(&self._b, &mov) {
+                        self.update_board(&mov, v[c]);
+                        players[c].discard_card(&mov);
+                    } else {
+                        continue 'game;
+                    }
+                },
             }
             println!("{}", mov);
             c = 1 - c;
