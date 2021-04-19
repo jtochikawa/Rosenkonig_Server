@@ -3,46 +3,12 @@ use crate::player;
 use crate::constant;
 use crate::manager;
 use big_s::S;
-use std::collections::HashMap;
-use maplit::hashmap;
 use rand::seq::SliceRandom;
 
 pub struct _Game {
     _b: board::_Board,
     _deck: Vec<String>,
     _discard: Vec<String>,
-}
-
-lazy_static! {
-    static ref CARDS: HashMap<String, (i32, i32)> = {
-        let m = hashmap! {
-            S("E1") => (1, 0),
-            S("E2") => (2, 0),
-            S("E3") => (3, 0),
-            S("W1") => (-1, 0),
-            S("W2") => (-2, 0),
-            S("W3") => (-3, 0),
-            S("N1") => (0, -1),
-            S("N2") => (0, -2),
-            S("N3") => (0, -3),
-            S("S1") => (0, 1),
-            S("S2") => (0, 2),
-            S("S3") => (0, 3),
-            S("NE1") => (1, -1),
-            S("NE2") => (2, -2),
-            S("NE3") => (3, -3),
-            S("NW1") => (-1, -1),
-            S("NW2") => (-2, -2),
-            S("NW3") => (-3, -3),
-            S("SE1") => (1, -1),
-            S("SE2") => (2, -2),
-            S("SE3") => (3, -3),
-            S("SW1") => (-1, 1),
-            S("SW2") => (-2, 2),
-            S("SW3") => (-3, 3),
-        };
-        m
-    };
 }
 
 impl _Game {
@@ -83,8 +49,10 @@ impl _Game {
     pub fn show(&self, players:&[player::_Player; 2]) {
         println!("deck: {:?}", self._deck);
         println!("discard: {:?}", self._discard);
+        print!("Player1: ");
         players[1].show_hand();
         self._b.show_board();
+        print!("Player0: ");
         players[0].show_hand();
     }
 
