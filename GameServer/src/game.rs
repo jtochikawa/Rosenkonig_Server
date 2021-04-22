@@ -44,6 +44,7 @@ impl _Game {
                         continue 'game;
                     }
                 },
+                "pass" => {},
                 _ =>  {
                     if manager::is_regal_move(&self._b, &mov) {
                         self.update_board(&mov, v[c]);
