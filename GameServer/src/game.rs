@@ -1,3 +1,5 @@
+// ゲームを回すモジュール
+
 use crate::board;
 use crate::player;
 use crate::constant;
@@ -9,6 +11,7 @@ pub struct _Game {
     _b: board::_Board,
     _deck: Vec<String>,
     _discard: Vec<String>,
+    _piece_num: u32,
 }
 
 impl _Game {
@@ -22,32 +25,37 @@ impl _Game {
                 S("SE1"), S("SE2"), S("SE3"), S("SW1"), S("SW2"), S("SW3"),
             ],
             _discard: vec![],
+            _piece_num: 0,
         }
     }
 
     pub fn game_loop(&mut self) {
         let mut rng = rand::thread_rng();
-        let v = [1, -1];
         self._deck.shuffle(&mut rng);
         let hands = self.deal();
-        let mut players = [player::_Player::init(&hands[0]), player::_Player::init(&hands[1])];
+        let mut players = [player::_Player::init(&hands[0], 1), player::_Player::init(&hands[1], -1)];
         let mut c: usize = 0 as usize;
         'game: loop {
+            if manager::is_end(&players, self._piece_num) { break 'game; }
             self.show(&players);
+            let movable_list = manager::create_movable_list(&self._b, &players[c]);
+            if movable_list.len() < 1 { 
+                c = 1 - c;
+                continue 'game; 
+            }
             let mov = players[c].input_mov();
             match mov.trim() {
                 "exit" => break 'game,
                 "draw" => {
-                    if manager::able_to_draw(&players[c]) {
+                    if movable_list.contains(&mov) {
                         self.update_hand(&mut players[c]);
                     } else {
                         continue 'game;
                     }
                 },
-                "pass" => {},
                 _ =>  {
-                    if manager::is_regal_move(&self._b, &mov) {
-                        self.update_board(&mov, v[c]);
+                    if movable_list.contains(&mov) {
+                        self.update_board(&mov, &mut players[c]);
                         players[c].discard_card(&mov);
                     } else {
                         continue 'game;
@@ -63,11 +71,14 @@ impl _Game {
     pub fn show(&self, players:&[player::_Player; 2]) {
         println!("deck: {:?}", self._deck);
         println!("discard: {:?}", self._discard);
+        println!("piece num: {0}", self._piece_num);
         print!("Player1: ");
         players[1].show_hand();
+        println!("Kight: {0}", players[1].get_kight_num());
         self._b.show_board();
         print!("Player0: ");
         players[0].show_hand();
+        println!("Kight: {0}", players[0].get_kight_num());
     }
 
     pub fn deal(&mut self) -> [Vec<String>; 2] {
@@ -79,11 +90,16 @@ impl _Game {
         hands
     }
 
-    pub fn update_board(&mut self, _mov:&String, _value:i32) {
+    pub fn update_board(&mut self, _mov:&String, _player:&mut player::_Player) {
         let &(x, y) = constant::CARDS.get(_mov).unwrap();
         self._b.move_king(x, y);
         let king = self._b.get_king();
-        self._b.set_board(king.0 as usize, king.1 as usize, _value);
+        if manager::is_empty(&self._b, king.0 as usize, king.1 as usize) {
+            self._piece_num += 1;
+        } else {
+            _player.dic_kight();
+        }
+        self._b.set_board(king.0 as usize, king.1 as usize, _player.get_value());
         self._discard.push(_mov.to_string());
     }
 

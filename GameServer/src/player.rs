@@ -1,13 +1,22 @@
+// プレイヤーの基本のモジュール
+
 use crate::input;
+use crate::constant;
 
 pub struct _Player {
     hand: Vec<String>,
+    pass_flag: bool,
+    value: i32,
+    kight: i32,
 }
 
 impl _Player {
-    pub fn init(h:&Vec<String>) -> _Player {
+    pub fn init(h:&Vec<String>, v:i32) -> _Player {
         _Player{
             hand: h.to_vec(),
+            pass_flag: false,
+            value: v,
+            kight: *constant::KIGHT,
         }
     }
 
@@ -41,5 +50,25 @@ impl _Player {
 
     pub fn discard_card(&mut self, mov:&String) {
         self.hand.retain(|x| x != mov);
+    }
+
+    pub fn get_pass_flag(&self) -> bool {
+        return self.pass_flag;
+    }
+
+    pub fn get_value(&self) -> i32 {
+        return self.value;
+    }
+
+    pub fn get_kight_num(&self) -> i32 {
+        return self.kight;
+    }
+
+    pub fn get_card(&self, index:usize) -> String {
+        return self.hand.get(index).unwrap().to_string();
+    }
+
+    pub fn dic_kight(&mut self) {
+        self.kight -= 1;
     }
 }
