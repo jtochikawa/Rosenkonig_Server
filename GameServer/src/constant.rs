@@ -4,6 +4,11 @@ use big_s::S;
 use std::collections::HashMap;
 use maplit::hashmap;
 
+pub const SIZE: usize = 9;
+pub const PIECE_NUM : u32 = 52;
+pub const EMPTY: i32 = 0;
+pub const KIGHT: i32 = 4;
+
 lazy_static! {
     pub static ref CARDS: HashMap<String, (i32, i32)> = {
         let m = hashmap! {
@@ -34,8 +39,4 @@ lazy_static! {
         };
         m
     };
-    pub static ref PIECE_NUM : u32 = 52;
-    pub static ref SIZE: i32 = 9;
-    pub static ref EMPTY: i32 = 0;
-    pub static ref KIGHT: i32 = 4;
 }

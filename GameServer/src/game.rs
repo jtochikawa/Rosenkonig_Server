@@ -6,6 +6,8 @@ use crate::constant;
 use crate::manager;
 use big_s::S;
 use rand::seq::SliceRandom;
+use std::time::Duration;
+use std::thread::sleep;
 
 pub struct _Game {
     _b: board::_Board,
@@ -30,20 +32,33 @@ impl _Game {
     }
 
     pub fn game_loop(&mut self) {
+        use rand::Rng;
+
         let mut rng = rand::thread_rng();
         self._deck.shuffle(&mut rng);
         let hands = self.deal();
         let mut players = [player::_Player::init(&hands[0], 1), player::_Player::init(&hands[1], -1)];
         let mut c: usize = 0 as usize;
         'game: loop {
+            sleep(Duration::from_millis(1000));
             if manager::is_end(&players, self._piece_num) { break 'game; }
-            self.show(&players);
+            players[c].set_pass_flag(false);
+            if self._deck.len() < 1 { // reshuffle
+                self._deck = self._discard.clone();
+                self._discard.clear();
+                self._deck.shuffle(&mut rng);
+            }
+            self.show(&players, true);
             let movable_list = manager::create_movable_list(&self._b, &players[c]);
-            if movable_list.len() < 1 { 
+            if movable_list.len() < 1 {
+                println!("Player{} pass!", c);
+                players[c].set_pass_flag(true);
                 c = 1 - c;
                 continue 'game; 
             }
-            let mov = players[c].input_mov();
+            //let mov = players[c].input_mov();
+            let index = rng.gen_range(0..movable_list.len());
+            let mov = movable_list.get(index).unwrap();
             match mov.trim() {
                 "exit" => break 'game,
                 "draw" => {
@@ -65,17 +80,25 @@ impl _Game {
             println!("{}", mov);
             c = 1 - c;
         }
+
+        self.show(&players, false);
+
+        let player0_score = manager::calc_score(&self._b, players[0].get_value());
+        let player1_score = manager::calc_score(&self._b, players[1].get_value());
+        if player0_score == player1_score { println!("Draw!! {0}:{1}", player0_score, player1_score); }
+        else if player0_score > player1_score { println!("Player0 Win!! {0}:{1}", player0_score, player1_score); }
+        else { println!("Player1 Win!! {0}:{1}", player0_score, player1_score); }
     }
 
     // 上をNとして上のプレイヤーを後手
-    pub fn show(&self, players:&[player::_Player; 2]) {
+    pub fn show(&self, players:&[player::_Player; 2], k_show:bool) {
         println!("deck: {:?}", self._deck);
         println!("discard: {:?}", self._discard);
         println!("piece num: {0}", self._piece_num);
         print!("Player1: ");
         players[1].show_hand();
         println!("Kight: {0}", players[1].get_kight_num());
-        self._b.show_board();
+        self._b.show_board(k_show);
         print!("Player0: ");
         players[0].show_hand();
         println!("Kight: {0}", players[0].get_kight_num());

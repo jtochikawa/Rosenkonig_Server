@@ -16,7 +16,7 @@ impl _Player {
             hand: h.to_vec(),
             pass_flag: false,
             value: v,
-            kight: *constant::KIGHT,
+            kight: constant::KIGHT,
         }
     }
 
@@ -54,6 +54,10 @@ impl _Player {
 
     pub fn get_pass_flag(&self) -> bool {
         return self.pass_flag;
+    }
+
+    pub fn set_pass_flag(&mut self, flag:bool) {
+        self.pass_flag = flag;
     }
 
     pub fn get_value(&self) -> i32 {

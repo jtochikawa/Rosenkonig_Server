@@ -1,26 +1,27 @@
 // 盤面を持っているモジュール
+use crate::constant;
 
 pub struct _Board {
-    b: [[i32; 9]; 9],
+    b: [[i32; constant::SIZE]; constant::SIZE],
     king: (i32, i32),
 }
 
 impl _Board {
     pub fn _init() -> _Board {
         _Board {
-            b: [[0; 9]; 9],
+            b: [[0; constant::SIZE]; constant::SIZE],
             king: (4, 4),
         }
     }
 
-    pub fn show_board(&self) {
+    pub fn show_board(&self, k_show:bool) {
         let mut cnt:i32 = 0;
         for _row in &self.b {
             for _i in 0.._row.len() {
-                if self.king.0 == _i as i32 && self.king.1 == cnt {
-                    print!("| K ");
+                if k_show && self.king.0 == _i as i32 && self.king.1 == cnt {
+                    print!("|  K ");
                 } else {
-                    print!("| {} ", _row[_i]);
+                    print!("| {0: >2} ", _row[_i]);
                 }
             }
             println!("|");
