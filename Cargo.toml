@@ -1,0 +1,6 @@
+[workspace]
+
+members = [
+    "play",
+    "game_server",
+]
